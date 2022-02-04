@@ -100,23 +100,33 @@ class App extends Component{
         if(term.length === 0){ //Если ничего нет в поиске , то ничего не делаем
             return items;
         }
+
+        return items.filter(item=>{
+            return item.name.indexOf(term) > -1
+        })
+    }
+    //Берем данные из файла SearchPanel
+    onUpdateSearch = (term) => {
+        this.setState({term});
     }
 
     render() {
         const {data, term} = this.state;
         const num = this.state.data.length;
         const numIncrease = this.state.data.filter(item => item.increase).length;
+        const visibleData = this.searchEmp(data, term);
+
         return(
             <div className="app">
                 <AppInfo
                     num = {num}
                     numIncrease = {numIncrease}/>
                 <div className='search-panel'>
-                    <SearchPanel/>
+                    <SearchPanel onUpdateSearch = {this.onUpdateSearch}/>
                     <AppFilter/>
                 </div>
                 <EmployeesList
-                    data = {this.state.data}
+                    data = {visibleData}
                     onDelete = {this.deleteItem}
                     onToggleProp={this.onToggleProp}/>
                 <EmployeesAddForm onAdd={this.addItem}/>
